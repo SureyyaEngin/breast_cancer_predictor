@@ -138,56 +138,62 @@ def get_radar_chart(input_data):
   return fig
 
 
-def add_predictions(input_data):
-  model = pickle.load(open("model/model.pkl", "rb"))
-  scaler = pickle.load(open("model/scaler.pkl", "rb"))
-  
-  input_array = np.array(list(input_data.values())).reshape(1, -1)
-  
-  input_array_scaled = scaler.transform(input_array)
-  
-  prediction = model.predict(input_array_scaled)
-  
-  st.subheader("Cell cluster prediction")
-  st.write("The cell cluster is:")
-  
-  if prediction[0] == 0:
-    st.write("<span class='diagnosis benign'>Benign</span>", unsafe_allow_html=True)
-  else:
-    st.write("<span class='diagnosis malicious'>Malicious</span>", unsafe_allow_html=True)
-    
-  
-  st.write("Probability of being benign: ", model.predict_proba(input_array_scaled)[0][0])
-  st.write("Probability of being malicious: ", model.predict_proba(input_array_scaled)[0][1])
-  
-  st.write("This app can assist medical professionals in making a diagnosis, but should not be used as a substitute for a professional diagnosis.")
+def add_predictions(input_data, selected_model):
+    model = pickle.load(open(f"model/{selected_model}_model.pkl", "rb"))
+    scaler = pickle.load(open(f"model/{selected_model}_scaler.pkl", "rb"))
 
+    input_array = np.array(list(input_data.values())).reshape(1, -1)
+    input_array_scaled = scaler.transform(input_array)
+
+    prediction = model.predict(input_array_scaled)
+
+    st.subheader("Cell cluster prediction")
+    st.write("The cell cluster is:")
+
+    if prediction[0] == 0:
+        st.write("<span class='diagnosis benign'>Benign</span>", unsafe_allow_html=True)
+    else:
+        st.write("<span class='diagnosis malicious'>Malicious</span>", unsafe_allow_html=True)
+
+    if hasattr(model, "predict_proba"):
+        st.write("Probability of being benign: ", model.predict_proba(input_array_scaled)[0][0])
+        st.write("Probability of being malignant: ", model.predict_proba(input_array_scaled)[0][1])
+    else:
+        st.info("This model does not support probability estimates.")
+
+    st.write("Note: This prediction is for educational purposes only.")
 
 
 def main():
-  st.set_page_config(
-    page_title="Breast Cancer Predictor",
-    page_icon=":female-doctor:",
-    layout="wide",
-    initial_sidebar_state="expanded"
-  )
-  
-  with open("assets/style.css") as f:
-    st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
-  
-  input_data = add_sidebar()
-  
-  with st.container():
-    st.title("Breast Cancer Predictor")
-    st.write("Please connect this app to your cytology lab to help diagnose breast cancer form your tissue sample. This app predicts using a machine learning model whether a breast mass is benign or malignant based on the measurements it receives from your cytosis lab. You can also update the measurements by hand using the sliders in the sidebar. ")
-  
-  col1, col2 = st.columns([4,1])
-  
-  with col1:
-    radar_chart = get_radar_chart(input_data)
-    st.plotly_chart(radar_chart)
-  with col2:
-    add_predictions(input_data)
+    st.set_page_config(
+        page_title="Breast Cancer Predictor",
+        page_icon=":female-doctor:",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+
+    with open("assets/style.css") as f:
+        st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
+
+    st.sidebar.title("Model Selection")
+    selected_model = st.sidebar.selectbox(
+        "Select a Machine Learning Model",
+        ("logistic", "naive_bayes", "knn", "svm")
+    )
+
+    input_data = add_sidebar()
+
+    with st.container():
+        st.title("Breast Cancer Predictor")
+        st.write("Select a model and adjust the measurements in the sidebar to get predictions.")
+
+    col1, col2 = st.columns([4, 1])
+
+    with col1:
+        radar_chart = get_radar_chart(input_data)
+        st.plotly_chart(radar_chart)
+    with col2:
+        add_predictions(input_data, selected_model)
 
 
  
