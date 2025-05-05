@@ -33,10 +33,10 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
     models = {
-        "logistic": LogisticRegression(),
-        "naive_bayes": GaussianNB(),
-        "knn": KNeighborsClassifier(n_neighbors=5),
-        "svm": SVC(probability=True)
+        "Logistic Regression": LogisticRegression(),
+        "Naive Bayes": GaussianNB(),
+        "KNN": KNeighborsClassifier(n_neighbors=5),
+        "SVM": SVC(probability=True)
     }
 
     for name, model in models.items():
