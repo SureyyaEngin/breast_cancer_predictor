@@ -27,7 +27,7 @@ Bu proje, meme kanseri teşhisi için çeşitli makine öğrenimi modelleri (Log
 3. **K-Nearest Neighbors (KNN)**
 4. **Support Vector Machine (SVM)**
 
-Modeller `model/train_models.py` dosyası ile eğitilir ve `model/*.pkl` dosyaları olarak kaydedilir.
+Modeller `model/main.py` dosyası ile eğitilir ve `model/*.pkl` dosyaları olarak kaydedilir.
 
 ## ⚙️ Kurulum
 
