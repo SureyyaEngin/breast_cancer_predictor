@@ -178,7 +178,7 @@ def main():
     st.sidebar.title("Model Selection")
     selected_model = st.sidebar.selectbox(
         "Select a Machine Learning Model",
-        ("logistic", "naive_bayes", "knn", "svm")
+        ("Logistic Regression", "Naive Bayes", "KNN", "SVM")
     )
 
     input_data = add_sidebar()
